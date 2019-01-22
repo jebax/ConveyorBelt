@@ -16,6 +16,10 @@ describe('A worker', () => {
     expect(worker.isAssembling).to.be.false
   })
 
+  it('has a widget assembly time of 4', () => {
+    expect(worker.timeToAssemble).to.equal(4)
+  })
+
   it('can take a component', () => {
     const component = 'A'
     worker.takeComponent(component)
@@ -23,12 +27,38 @@ describe('A worker', () => {
     expect(worker.components).to.include(component)
   })
 
-  it('starts assembling once both component types are held', () => {
-    const firstComponent = 'A'
-    const secondComponent = 'B'
-    worker.takeComponent(firstComponent)
-    worker.takeComponent(secondComponent)
+  it('cannot take two of the same component', () => {
+    worker.takeComponent('A')
+    worker.takeComponent('A')
 
-    expect(worker.isAssembling).to.be.true
+    expect(worker.components.length).to.equal(1)
+  })
+
+  it('does not reduce their assembly time on tick unless assembling', () => {
+    worker.tick()
+    expect(worker.timeToAssemble).to.equal(4)
+  })
+
+  describe('assembling a widget', () => {
+    beforeEach(() => {
+      worker.takeComponent('A')
+      worker.takeComponent('B')
+    })
+
+    it('begins assembling once both component types are held', () => {
+      expect(worker.isAssembling).to.be.true
+    })
+
+    it('takes 4 ticks of time to assemble', () => {
+      for (let i = 4; i > 1; i--) {
+        worker.tick()
+        expect(worker.isAssembling).to.be.true
+        expect(worker.hasWidget).to.be.false
+      }
+
+      worker.tick()
+      expect(worker.isAssembling).to.be.true
+      expect(worker.hasWidget).to.be.false
+    })
   })
 })
