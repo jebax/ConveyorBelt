@@ -40,25 +40,42 @@ describe('A worker', () => {
   })
 
   describe('assembling a widget', () => {
-    beforeEach(() => {
-      worker.takeComponent('A')
-      worker.takeComponent('B')
+    let secondWorker
+
+    before(() => {
+      secondWorker = new Worker()
     })
 
     it('begins assembling once both component types are held', () => {
-      expect(worker.isAssembling).to.be.true
+      secondWorker.takeComponent('A')
+      secondWorker.takeComponent('B')
+
+      expect(secondWorker.isAssembling).to.be.true
     })
 
     it('takes 4 ticks of time to assemble', () => {
-      for (let i = 4; i > 1; i--) {
-        worker.tick()
-        expect(worker.isAssembling).to.be.true
-        expect(worker.hasWidget).to.be.false
+      const expectedComponents = ['P']
+
+      for (let i = 4; i > 0; i--) {
+        secondWorker.tick()
+        expect(secondWorker.isAssembling).to.be.true
+        expect(secondWorker.hasWidget).to.be.false
       }
 
-      worker.tick()
-      expect(worker.isAssembling).to.be.true
-      expect(worker.hasWidget).to.be.false
+      secondWorker.tick()
+      expect(secondWorker.isAssembling).to.be.false
+      expect(secondWorker.hasWidget).to.be.true
+      expect(secondWorker.components).to.deep.equal(expectedComponents)
+    })
+
+    it('can take one more component when holding a widget', () => {
+      const expectedComponents = ['P', 'A']
+
+      secondWorker.takeComponent('A')
+      secondWorker.takeComponent('B')
+      secondWorker.takeComponent('A')
+
+      expect(secondWorker.components).to.deep.equal(expectedComponents)
     })
   })
 })
