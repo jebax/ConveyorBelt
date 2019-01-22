@@ -11,4 +11,8 @@ describe('A worker', () => {
   it('should not initially have any widgets', () => {
     expect(worker.hasWidget).to.be.false
   })
+
+  it('should not initially be assembling a widget', () => {
+    expect(worker.isAssembling).to.be.false
+  })
 })
