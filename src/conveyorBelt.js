@@ -11,10 +11,8 @@ class ConveyorBelt {
   }
 
   receiveWidget(slot) {
-    const chosenSlot = this.slots[slot]
-
-    if (!chosenSlot) {
-      chosenSlot = 'P'
+    if (!this.slots[slot]) {
+      this.slots[slot] = 'P'
     }
   }
 }

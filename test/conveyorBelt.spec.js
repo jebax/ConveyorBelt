@@ -41,20 +41,20 @@ describe('A conveyor belt', () => {
     expect(conveyorBelt.slots[0]).to.equal(null)
   })
 
-  it('can receive a widget in an empty slot', () => {
-    randomStub.returns(2)
-    conveyorBelt.tick()
-
-    conveyorBelt.receiveWidget(0)
-    expect(conveyorBelt.slots[0]).to.equal('P')
-  })
-
   it('cannot receive a widget in a slot containing a component', () => {
     randomStub.returns(0)
     conveyorBelt.tick()
 
     conveyorBelt.receiveWidget(0)
     expect(conveyorBelt.slots).not.to.includes('P')
+  })
+
+  it('can receive a widget in an empty slot', () => {
+    randomStub.returns(2)
+    conveyorBelt.tick()
+
+    conveyorBelt.receiveWidget(0)
+    expect(conveyorBelt.slots[0]).to.equal('P')
   })
 
   afterEach(() => {
