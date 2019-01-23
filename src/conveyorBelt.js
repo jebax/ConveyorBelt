@@ -9,6 +9,14 @@ class ConveyorBelt {
 
     this.slots.push(this.componentTypes[randomIndex])
   }
+
+  receiveWidget(slot) {
+    const chosenSlot = this.slots[slot]
+
+    if (!chosenSlot) {
+      chosenSlot = 'P'
+    }
+  }
 }
 
 export default ConveyorBelt

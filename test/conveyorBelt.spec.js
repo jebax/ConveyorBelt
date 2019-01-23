@@ -4,9 +4,11 @@ import ConveyorBelt from '../src/conveyorBelt'
 
 describe('A conveyor belt', () => {
   let conveyorBelt
+  let randomStub
 
   beforeEach(() => {
     conveyorBelt = new ConveyorBelt()
+    randomStub = sinon.stub(Math, 'floor')
   })
 
   it('starts with empty slots', () => {
@@ -19,26 +21,43 @@ describe('A conveyor belt', () => {
   })
 
   it('can randomly get an `A` component', () => {
-    sinon.stub(Math, 'floor').returns(0)
+    randomStub.returns(0)
     conveyorBelt.tick()
 
-    Math.floor.restore()
     expect(conveyorBelt.slots[0]).to.equal('A')
   })
 
   it('can randomly get a `B` component', () => {
-    sinon.stub(Math, 'floor').returns(1)
+    randomStub.returns(1)
     conveyorBelt.tick()
 
-    Math.floor.restore()
     expect(conveyorBelt.slots[0]).to.equal('B')
   })
 
   it('can randomly get an empty slot', () => {
-    sinon.stub(Math, 'floor').returns(2)
+    randomStub.returns(2)
     conveyorBelt.tick()
 
-    Math.floor.restore()
     expect(conveyorBelt.slots[0]).to.equal(null)
+  })
+
+  it('can receive a widget in an empty slot', () => {
+    randomStub.returns(2)
+    conveyorBelt.tick()
+
+    conveyorBelt.receiveWidget(0)
+    expect(conveyorBelt.slots[0]).to.equal('P')
+  })
+
+  it('cannot receive a widget in a slot containing a component', () => {
+    randomStub.returns(0)
+    conveyorBelt.tick()
+
+    conveyorBelt.receiveWidget(0)
+    expect(conveyorBelt.slots).not.to.includes('P')
+  })
+
+  afterEach(() => {
+    randomStub.restore()
   })
 })
