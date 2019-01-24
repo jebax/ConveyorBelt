@@ -15,6 +15,17 @@ class Worker {
     }
   }
 
+  placeWidget(conveyorBelt, slot) {
+    if (this.hasWidget) {
+      this.components.shift()
+      this.hasWidget = false
+      this.timeToAssemble = 4
+      conveyorBelt.receiveWidget(slot)
+    } else {
+      return false
+    }
+  }
+
   tick() {
     if (this.isAssembling && this.timeToAssemble === 0) {
       this.hasWidget = true

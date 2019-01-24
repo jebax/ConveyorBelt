@@ -1,11 +1,17 @@
 import { expect } from 'chai'
+import sinon from 'sinon'
+import helpers from './testHelpers'
 import Worker from '../src/worker'
 
 describe('A worker', () => {
   let worker
+  let conveyorBelt
 
   beforeEach(() => {
     worker = new Worker()
+    conveyorBelt = {
+      receiveWidget: sinon.fake()
+    }
   })
 
   it('should not initially have any widgets', () => {
@@ -39,7 +45,11 @@ describe('A worker', () => {
     expect(worker.timeToAssemble).to.equal(4)
   })
 
-  describe('assembling a widget', () => {
+  it('cannot place a widget if they are not holding one', () => {
+    expect(worker.placeWidget()).to.equal(false)
+  })
+
+  context('assembling a widget', () => {
     it('begins assembling once both component types are held', () => {
       worker.takeComponent('A')
       worker.takeComponent('B')
@@ -65,17 +75,31 @@ describe('A worker', () => {
     })
 
     it('can take one more component when holding a widget', () => {
+      helpers.assembleWidget(worker)
       worker.takeComponent('A')
       worker.takeComponent('B')
-      for (let i = 4; i >= 0; i--) { worker.tick() }
+      worker.takeComponent('A')
 
       const expectedComponents = ['P', 'A']
-
-      worker.takeComponent('A')
-      worker.takeComponent('B')
-      worker.takeComponent('A')
-
       expect(worker.components).to.deep.equal(expectedComponents)
+    })
+
+    it('can place a completed widget', () => {
+      helpers.assembleWidget(worker)
+      worker.placeWidget(conveyorBelt)
+
+      expect(worker.components).not.to.includes('P')
+      expect(worker.hasWidget).to.be.false
+    })
+
+    it('placing widget makes conveyor belt receive widget', () => {
+      helpers.assembleWidget(worker)
+
+      const slot = 0
+      worker.placeWidget(conveyorBelt, slot)
+
+      expect(conveyorBelt.receiveWidget.callCount).to.equal(1)
+      expect(conveyorBelt.receiveWidget.calledWith(slot)).to.be.true
     })
   })
 })
