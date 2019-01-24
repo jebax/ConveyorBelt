@@ -15,46 +15,84 @@ describe('A conveyor belt', () => {
     expect(conveyorBelt.slots.length).to.equal(0)
   })
 
-  it('gets a new component with each tick of time', () => {
-    conveyorBelt.tick()
-    expect(conveyorBelt.slots.length).to.equal(1)
+  it('has a default length of 3', () => {
+    expect(conveyorBelt.length).to.equal(3)
   })
 
-  it('can randomly get an `A` component', () => {
-    randomStub.returns(0)
-    conveyorBelt.tick()
+  it('has an adjustable length', () => {
+    const longConveyorBelt = new ConveyorBelt(100)
 
-    expect(conveyorBelt.slots[0]).to.equal('A')
+    expect(longConveyorBelt.length).to.equal(100)
   })
 
-  it('can randomly get a `B` component', () => {
-    randomStub.returns(1)
-    conveyorBelt.tick()
+  context('getting components', () => {
+    it('gets a new component with each tick of time', () => {
+      conveyorBelt.tick()
+      expect(conveyorBelt.slots.length).to.equal(1)
+    })
 
-    expect(conveyorBelt.slots[0]).to.equal('B')
+    it('can randomly get an `A` component', () => {
+      randomStub.returns(0)
+      conveyorBelt.tick()
+
+      expect(conveyorBelt.slots[0]).to.equal('A')
+    })
+
+    it('can randomly get a `B` component', () => {
+      randomStub.returns(1)
+      conveyorBelt.tick()
+
+      expect(conveyorBelt.slots[0]).to.equal('B')
+    })
+
+    it('can randomly get an empty slot', () => {
+      randomStub.returns(2)
+      conveyorBelt.tick()
+
+      expect(conveyorBelt.slots[0]).to.equal(null)
+    })
   })
 
-  it('can randomly get an empty slot', () => {
-    randomStub.returns(2)
-    conveyorBelt.tick()
+  context('receiving widgets', () => {
+    it('cannot receive a widget in a slot containing a component', () => {
+      randomStub.returns(0)
+      conveyorBelt.tick()
 
-    expect(conveyorBelt.slots[0]).to.equal(null)
+      conveyorBelt.receiveWidget(0)
+      expect(conveyorBelt.slots).not.to.includes('P')
+    })
+
+    it('can receive a widget in an empty slot', () => {
+      randomStub.returns(2)
+      conveyorBelt.tick()
+
+      conveyorBelt.receiveWidget(0)
+      expect(conveyorBelt.slots[0]).to.equal('P')
+    })
   })
 
-  it('cannot receive a widget in a slot containing a component', () => {
-    randomStub.returns(0)
-    conveyorBelt.tick()
+  context('item reaching the end of the belt', () => {
+    it('reaches the end after 4 ticks by default', () => {
+      randomStub.returns(0)
 
-    conveyorBelt.receiveWidget(0)
-    expect(conveyorBelt.slots).not.to.includes('P')
-  })
+      for(let i = 0; i < 3; i++) {
+        conveyorBelt.tick()
+        expect(conveyorBelt.finishedItems.length).to.equal(0)
+      }
 
-  it('can receive a widget in an empty slot', () => {
-    randomStub.returns(2)
-    conveyorBelt.tick()
+      conveyorBelt.tick()
+      expect(conveyorBelt.finishedItems).to.deep.equal(['A'])
+    })
 
-    conveyorBelt.receiveWidget(0)
-    expect(conveyorBelt.slots[0]).to.equal('P')
+    it('can be an assembled widget', () => {
+      randomStub.returns(2)
+
+      for(let i = 0; i < 3; i++) conveyorBelt.tick()
+      conveyorBelt.receiveWidget(2)
+      conveyorBelt.tick()
+
+      expect(conveyorBelt.finishedItems).to.deep.equal(['P'])
+    })
   })
 
   afterEach(() => {
