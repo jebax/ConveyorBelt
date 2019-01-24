@@ -5,7 +5,7 @@
   "main": "",
   "scripts": {
     "test": "nyc mocha --require @babel/register ./test/*.spec.js",
-    "build": "babel src --out-dir build",
+    "build": "babel src bin --out-dir build",
     "start": "npm run build && node ./build/runSimulation.js"
   },
   "author": "Joel Baxter",
