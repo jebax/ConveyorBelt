@@ -5,15 +5,17 @@ class ProductionLine {
   constructor () {
     this.conveyorBelt = new conveyorExports.default()
     this.workers = []
-    this.unusedComponents = []
-    this.completedWidgets = []
     this.assignWorkers()
   }
 
   get output () {
     return {
-      unusedComponents: this.unusedComponents.length,
-      completedWidgets: this.completedWidgets.length
+      unusedComponents: this.conveyorBelt.finishedItems.filter(
+        item => item === 'A' || item === 'B'
+      ).length,
+      completedWidgets: this.conveyorBelt.finishedItems.filter(
+        item => item === 'P'
+      ).length
     }
   }
 

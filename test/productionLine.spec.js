@@ -38,8 +38,7 @@ describe('A production line', () => {
   })
 
   it('can compute the total number of widgets and unused components', () => {
-    productionLine.unusedComponents = ['A', 'B', 'A']
-    productionLine.completedWidgets = ['P', 'P']
+    productionLine.conveyorBelt.finishedItems = ['A', 'B', 'A', 'P', 'P']
     const expectedResult = {
       unusedComponents: 3,
       completedWidgets: 2
