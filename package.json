@@ -23,6 +23,7 @@
     "eslint-plugin-standard": "^4.0.0",
     "istanbul": "^0.4.5",
     "mocha": "^5.2.0",
+    "proxyquire-2": "^1.0.7",
     "sinon": "^7.2.3"
   }
 }

@@ -1,13 +1,19 @@
 import Worker from '../src/worker'
 
-const helpers = {
-  assembleWidget (worker) {
-    worker.takeComponent('A')
-    worker.takeComponent('B')
-    for (let i = 4; i >= 0; i--) {
-      worker.tick()
-    }
+const assembleWidget = worker => {
+  worker.takeComponent('A')
+  worker.takeComponent('B')
+  for (let i = 4; i >= 0; i--) {
+    worker.tick()
   }
 }
 
-export default helpers
+class TestConveyor {
+  constructor() {
+    this.length = 3
+  }
+}
+
+class TestWorker {}
+
+export default { assembleWidget, TestConveyor, TestWorker }
