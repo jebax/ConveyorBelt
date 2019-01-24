@@ -10,6 +10,7 @@ describe('A worker', () => {
   beforeEach(() => {
     worker = new Worker()
     conveyorBelt = {
+      releaseItem: sinon.fake(),
       receiveWidget: sinon.fake()
     }
   })
@@ -26,40 +27,55 @@ describe('A worker', () => {
     expect(worker.timeToAssemble).to.equal(4)
   })
 
-  it('can take a component', () => {
-    const component = 'A'
-    worker.takeComponent(component)
+  context('taking a component', () => {
+    it('can take a component', () => {
+      const component = 'A'
+      worker.takeComponent(conveyorBelt, 0, component)
 
-    expect(worker.components).to.include(component)
+      expect(worker.components).to.include(component)
+    })
+
+    it('cannot take two of the same component', () => {
+      worker.takeComponent(conveyorBelt, 0, 'A')
+      worker.takeComponent(conveyorBelt, 0, 'A')
+
+      expect(worker.components.length).to.equal(1)
+    })
+
+    it('does not reduce their assembly time on tick unless assembling', () => {
+      worker.tick()
+      expect(worker.timeToAssemble).to.equal(4)
+    })
+
+    it('cannot place a widget if they are not holding one', () => {
+      expect(worker.placeWidget()).to.equal(false)
+    })
+
+    it('taking a component makes the conveyor belt release widget', () => {
+      const slot = 0
+      worker.takeComponent(conveyorBelt, slot, 'A')
+
+      expect(conveyorBelt.releaseItem.callCount).to.equal(1)
+      expect(conveyorBelt.releaseItem.calledWith(slot)).to.be.true
+    })
+
+    it('returns false if there is no component to take', () => {
+      expect(worker.takeComponent(conveyorBelt, 0, null)).to.equal(false)
+    })
   })
 
-  it('cannot take two of the same component', () => {
-    worker.takeComponent('A')
-    worker.takeComponent('A')
-
-    expect(worker.components.length).to.equal(1)
-  })
-
-  it('does not reduce their assembly time on tick unless assembling', () => {
-    worker.tick()
-    expect(worker.timeToAssemble).to.equal(4)
-  })
-
-  it('cannot place a widget if they are not holding one', () => {
-    expect(worker.placeWidget()).to.equal(false)
-  })
 
   context('assembling a widget', () => {
     it('begins assembling once both component types are held', () => {
-      worker.takeComponent('A')
-      worker.takeComponent('B')
+      worker.takeComponent(conveyorBelt, 0, 'A')
+      worker.takeComponent(conveyorBelt, 0, 'B')
 
       expect(worker.isAssembling).to.be.true
     })
 
     it('takes 4 ticks of time to assemble', () => {
-      worker.takeComponent('A')
-      worker.takeComponent('B')
+      worker.takeComponent(conveyorBelt, 0, 'A')
+      worker.takeComponent(conveyorBelt, 0, 'B')
       const expectedComponents = ['P']
 
       for (let i = 4; i > 0; i--) {
@@ -75,17 +91,17 @@ describe('A worker', () => {
     })
 
     it('can take one more component when holding a widget', () => {
-      helpers.assembleWidget(worker)
-      worker.takeComponent('A')
-      worker.takeComponent('B')
-      worker.takeComponent('A')
+      helpers.assembleWidget(worker, conveyorBelt)
+      worker.takeComponent(conveyorBelt, 0, 'A')
+      worker.takeComponent(conveyorBelt, 0, 'B')
+      worker.takeComponent(conveyorBelt, 0, 'A')
 
       const expectedComponents = ['P', 'A']
       expect(worker.components).to.deep.equal(expectedComponents)
     })
 
     it('can place a completed widget', () => {
-      helpers.assembleWidget(worker)
+      helpers.assembleWidget(worker, conveyorBelt)
       worker.placeWidget(conveyorBelt)
 
       expect(worker.components).not.to.includes('P')
@@ -93,10 +109,10 @@ describe('A worker', () => {
     })
 
     it('placing widget makes conveyor belt receive widget', () => {
-      helpers.assembleWidget(worker)
+      helpers.assembleWidget(worker, conveyorBelt)
 
       const slot = 0
-      worker.placeWidget(conveyorBelt, slot)
+      worker.placeWidget(conveyorBelt, slot, 'A')
 
       expect(conveyorBelt.receiveWidget.callCount).to.equal(1)
       expect(conveyorBelt.receiveWidget.calledWith(slot)).to.be.true

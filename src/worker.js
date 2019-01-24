@@ -6,10 +6,18 @@ class Worker {
     this.hasWidget = false
   }
 
-  takeComponent (component) {
-    if (!this.components.includes(component) && this.components.length < 2) {
+  takeComponent (conveyorBelt, slot, component) {
+    if (
+      component &&
+      !this.components.includes(component) &&
+      this.components.length < 2
+    ) {
+      conveyorBelt.releaseItem(slot)
       this.components.push(component)
+    } else {
+      return false
     }
+
     if (this.components.includes('A') && this.components.includes('B')) {
       this.isAssembling = true
     }

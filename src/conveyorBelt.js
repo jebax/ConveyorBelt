@@ -20,6 +20,10 @@ class ConveyorBelt {
       this.slots[slot] = 'P'
     }
   }
+
+  releaseItem (slot) {
+    this.slots[slot] = null
+  }
 }
 
 export default ConveyorBelt

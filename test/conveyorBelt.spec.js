@@ -71,6 +71,18 @@ describe('A conveyor belt', () => {
     })
   })
 
+  context('releasing items', () => {
+    it('should remove the correct item', () => {
+      randomStub.returns(0)
+      conveyorBelt.tick()
+      randomStub.returns(1)
+      conveyorBelt.tick()
+
+      conveyorBelt.releaseItem(0)
+      expect(conveyorBelt.slots).to.deep.equal([null, 'A'])
+    })
+  })
+
   context('item reaching the end of the belt', () => {
     it('reaches the end after 4 ticks by default', () => {
       randomStub.returns(0)
