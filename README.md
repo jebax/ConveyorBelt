@@ -4,7 +4,7 @@ This Node program calculates the number of widgets produced by workers at a conv
 
 ## Challenge Description
 
-The challenge is to simulate a production line, including the conveyor belt and its workers. Time passes in the form of ticks, and actions happen with each tick. Each `slot` on the conveyor belt can either hold an `A` or `B` component, or be empty. Workers (in pairs) on either side of the belt can pick up exactly one of each component, then assemble a widget over 
+The challenge is to simulate a production line, including the conveyor belt and its workers. Time passes in the form of ticks, and actions happen with each tick. Each `slot` on the conveyor belt can either hold an `A` or `B` component, or be empty. Workers (in pairs) on either side of the belt can pick up exactly one of each component, then assemble a widget over
 the duration of four ticks. Once they have finished assembling, they can place the completed widget back on an empty space on the conveyor belt.
 
 The end result must be to calculate the number of completed widgets, and the number of components that were not picked up, for 100 ticks.
@@ -34,5 +34,5 @@ I adopted a TDD and OOD approach for this challenge. I could have gone further w
 To install this project:
 - Clone the repository
 - `npm install` to install local dependencies
-- `npm test` to run tests
+- `npm test` to run tests and view test coverage (currently 100% coverage)
 - `npm start` to compile & run the `runSimulation` script (results will be displayed in the console).
