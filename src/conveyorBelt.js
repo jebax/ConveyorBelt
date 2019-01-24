@@ -6,13 +6,8 @@ class ConveyorBelt {
     this.finishedItems = []
   }
 
-  tick () {
-    const randomIndex = Math.floor(Math.random() * Math.floor(3))
-    this.slots.unshift(this.componentTypes[randomIndex])
-
-    if (this.slots.length > this.length) {
-      this.finishedItems.push(this.slots.pop())
-    }
+  releaseItem (slot) {
+    this.slots[slot] = null
   }
 
   receiveWidget (slot) {
@@ -21,8 +16,13 @@ class ConveyorBelt {
     }
   }
 
-  releaseItem (slot) {
-    this.slots[slot] = null
+  tick () {
+    const randomIndex = Math.floor(Math.random() * Math.floor(3))
+    this.slots.unshift(this.componentTypes[randomIndex])
+
+    if (this.slots.length > this.length) {
+      this.finishedItems.push(this.slots.pop())
+    }
   }
 }
 
