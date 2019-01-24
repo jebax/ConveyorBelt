@@ -36,4 +36,15 @@ describe('A production line', () => {
 
     expect(productionLine.workers).to.deep.equal(expectedWorkers)
   })
+
+  it('can compute the total number of widgets and unused components', () => {
+    productionLine.unusedComponents = ['A', 'B', 'A']
+    productionLine.completedWidgets = ['P', 'P']
+    const expectedResult = {
+      unusedComponents: 3,
+      completedWidgets: 2
+    }
+
+    expect(productionLine.output).to.deep.equal(expectedResult)
+  })
 })

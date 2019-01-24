@@ -2,10 +2,19 @@ import * as conveyorExports from './conveyorBelt'
 import * as workerExports from './worker'
 
 class ProductionLine {
-  constructor (conveyorBeltClass) {
+  constructor () {
     this.conveyorBelt = new conveyorExports.default()
     this.workers = []
+    this.unusedComponents = []
+    this.completedWidgets = []
     this.assignWorkers()
+  }
+
+  get output () {
+    return {
+      unusedComponents: this.unusedComponents.length,
+      completedWidgets: this.completedWidgets.length
+    }
   }
 
   assignWorkers () {
