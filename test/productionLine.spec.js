@@ -10,6 +10,8 @@ describe('A production line', () => {
   let productionLine
   let conveyorClass
   let workerClass
+  let takeComponentStub
+  let placeWidgetStub
 
   beforeEach(() => {
     conveyorClass = helpers.TestConveyor
@@ -20,6 +22,9 @@ describe('A production line', () => {
     })
 
     productionLine = new lineExports.default
+
+    takeComponentStub = sinon.stub(workerClass.prototype, 'takeComponent')
+    placeWidgetStub = sinon.stub(workerClass.prototype, 'placeWidget')
   })
 
   it('starts with the correct conveyor belt', () => {
@@ -45,5 +50,36 @@ describe('A production line', () => {
     }
 
     expect(productionLine.output).to.deep.equal(expectedResult)
+  })
+
+  it('ticks time along with its conveyor belt and workers', () => {
+    const workerTick = sinon.stub(workerClass.prototype, 'tick')
+    const conveyorTick = sinon.stub(conveyorClass.prototype, 'tick')
+
+    productionLine.tick()
+
+    expect(workerTick.callCount).to.equal(6)
+    expect(conveyorTick.callCount).to.equal(1)
+  })
+
+  it('instructs the workers to perform the correct actions', () => {
+    takeComponentStub.returns(false)
+    placeWidgetStub.returns(false)
+    productionLine.tick()
+
+    expect(takeComponentStub.callCount).to.equal(6)
+    expect(placeWidgetStub.callCount).to.equal(6)
+  })
+
+  it('only lets the second worker act when the first has not acted', () => {
+    takeComponentStub.returns(true)
+    placeWidgetStub.returns(true)
+    productionLine.tick()
+    expect(takeComponentStub.callCount).to.equal(3)
+  })
+
+  afterEach(() => {
+    takeComponentStub.restore()
+    placeWidgetStub.restore()
   })
 })

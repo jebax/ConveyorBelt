@@ -11,6 +11,7 @@ const assembleWidget = (worker, conveyorBelt) => {
 class TestConveyor {
   constructor () {
     this.length = 3
+    this.slots = ['A', 'B', 'A']
   }
 
   tick() {}
@@ -18,6 +19,8 @@ class TestConveyor {
 
 class TestWorker {
   tick() {}
+  takeComponent() { return false }
+  placeWidget() { return false }
 }
 
 export default { assembleWidget, TestConveyor, TestWorker }

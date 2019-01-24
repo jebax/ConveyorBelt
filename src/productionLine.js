@@ -29,6 +29,24 @@ class ProductionLine {
       this.workers.push([firstWorker, secondWorker])
     }
   }
+
+  tick () {
+    this.conveyorBelt.tick()
+    this.workers.forEach(pair => pair.forEach(worker => worker.tick()))
+
+    this.conveyorBelt.slots.forEach((component, slotNumber) => {
+      const firstWorker = this.workers[slotNumber][0]
+      const secondWorker = this.workers[slotNumber][1]
+
+      if (
+        firstWorker.takeComponent(this.conveyorBelt, slotNumber, component) === false &&
+        firstWorker.placeWidget(this.conveyorBelt, slotNumber) === false
+      ) {
+        secondWorker.takeComponent(this.conveyorBelt, slotNumber, component)
+        secondWorker.placeWidget(this.conveyorBelt, slotNumber)
+      }
+    })
+  }
 }
 
 export default ProductionLine
