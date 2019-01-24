@@ -4,7 +4,9 @@
   "description": "Calculating the number of widgets produced at a conveyor belt.",
   "main": "",
   "scripts": {
-    "test": "mocha --require @babel/register ./test/*.spec.js"
+    "test": "mocha --require @babel/register ./test/*.spec.js",
+    "build": "babel src --out-dir build",
+    "start": "npm run build && node ./build/runSimulation.js"
   },
   "author": "Joel Baxter",
   "license": "ISC",
