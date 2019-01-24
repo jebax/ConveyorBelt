@@ -1,12 +1,12 @@
 class Worker {
-  constructor() {
+  constructor () {
     this.components = []
     this.timeToAssemble = 4
     this.isAssembling = false
     this.hasWidget = false
   }
 
-  takeComponent(component) {
+  takeComponent (component) {
     if (!this.components.includes(component) && this.components.length < 2) {
       this.components.push(component)
     }
@@ -15,7 +15,7 @@ class Worker {
     }
   }
 
-  placeWidget(conveyorBelt, slot) {
+  placeWidget (conveyorBelt, slot) {
     if (this.hasWidget) {
       this.components.shift()
       this.hasWidget = false
@@ -26,7 +26,7 @@ class Worker {
     }
   }
 
-  tick() {
+  tick () {
     if (this.isAssembling && this.timeToAssemble === 0) {
       this.hasWidget = true
       this.isAssembling = false
